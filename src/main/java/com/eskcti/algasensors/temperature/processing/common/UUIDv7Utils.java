@@ -1,4 +1,4 @@
-package com.eskcti.algasensors.temperature.processing;
+package com.eskcti.algasensors.temperature.processing.common;
 
 import java.time.*;
 import java.util.UUID;
