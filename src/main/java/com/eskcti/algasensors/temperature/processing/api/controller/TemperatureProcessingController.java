@@ -4,6 +4,8 @@ import org.springframework.http.MediaType;
 
 import java.time.OffsetDateTime;
 
+import org.springframework.amqp.core.MessagePostProcessor;
+import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -56,6 +58,10 @@ public class TemperatureProcessingController {
         String routingKey = "";
         Object payload = logOutput;
 
-        rabbitTemplate.convertAndSend(exchange, routingKey, payload);
+        MessagePostProcessor messagePostProcessor = (MessagePostProcessor) message -> {
+            message.getMessageProperties().setHeader("sensorId", logOutput.getSensorId().toString());
+            return message;
+        };
+        rabbitTemplate.convertAndSend(exchange, routingKey, payload, messagePostProcessor);
     }
 }
